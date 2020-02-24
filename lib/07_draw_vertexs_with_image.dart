@@ -1,5 +1,4 @@
 import 'dart:async';
-//import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/rendering.dart' as sky;
@@ -55,10 +54,8 @@ class MyRenderBox extends sky.RenderBox {
   @override
   void paint(sky.PaintingContext context, sky.Offset offset) {
     if(img == null) {
-      print("HELLO01");
       return;
     }
-    print("HELLO03");
     context.canvas.translate(50.0, 50.0);
     context.canvas.scale(8.0, 8.0);
     paintWithImage(context, offset);
@@ -73,7 +70,6 @@ class MyRenderBox extends sky.RenderBox {
       new skyui.Offset(50.0, 60.0),
       new skyui.Offset(40.0, 10.0)
     ];
-    
     List<skyui.Offset> textureCoordinates = [
       new skyui.Offset(0.0, 0.0),
       new skyui.Offset(0.0, 1.0 * img.height),
@@ -92,24 +88,13 @@ class MyRenderBox extends sky.RenderBox {
     Float64List matrix4 = new sky.Matrix4.identity().storage;
     skyui.ImageShader imgShader = new skyui.ImageShader(img, tmx, tmy, matrix4);
     paint.shader = imgShader;
-    //List<int> indicies = [0, 1, 2, 3];
-
-    
+    List<int> indicies = [0, 1, 2, 3];
+    // Linear/Radial/SweepGradient and ImageShader not supported yet
+    // https://github.com/flutter/engine/blob/master/lib/web_ui/lib/src/engine/bitmap_canvas.dart
     skyui.Vertices vertices = new skyui.Vertices(
         vertexMode, verticesSrc,
         textureCoordinates: textureCoordinates,
         colors: colors);
-    //var position = Float32List.fromList([0.0, 0.0,10.0, 50.0,50.0, 60.0,40.0, 10.0]);
-    //var textureCoordinates = Float32List.fromList([
-    // 0.0, 0.0,0.0, 1.0 * img.height,1.0 * img.width, 1.0 * img.height,1.0 * img.width, 0.0
-    //]);
-    //skyui.Vertices vertices =  skyui.Vertices.raw(vertexMode, position,
-    // textureCoordinates: textureCoordinates);
-    
-    paint.shader = imgShader;
-    //print("=========== 1 =");
-    //print("=========== ${imgShader} =");
-    //print("=========== 2 =");
     context.canvas.drawVertices(vertices, skyui.BlendMode.color, paint);
   }
 }
