@@ -1,19 +1,12 @@
 
 import 'dart:async';
-import 'dart:typed_data';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart' as sky;
 import 'package:flutter/services.dart' as sky;
 import 'package:flutter/widgets.dart' as sky;
 import 'package:flutter/material.dart' as sky;
 import 'package:flutter/painting.dart' as sky;
 import 'dart:ui' as skyui;
-import 'dart:io' as io;
-import 'package:http/io_client.dart' as http_io;
-import 'package:http/browser_client.dart' as http_browser;
-
-import 'package:http/http.dart' as http;
 
 
 Future<Null> main() {
@@ -54,7 +47,7 @@ class MyRenderBox extends sky.RenderBox {
 
   loadImage() async {
     if (image == null) {
-      image = await ImageLoader.load("https://avatars0.githubusercontent.com/u/1310669");
+      image = await ImageLoader.load("assets/sample.jpeg");
       this.markNeedsPaint();
     }
   }
@@ -75,26 +68,23 @@ class MyRenderBox extends sky.RenderBox {
 }
 
 class ImageLoader {
-  static Future<skyui.Image> load(String url) async {
-    
-    http.BaseClient client;
-    if(kIsWeb) {
-      client = http_browser.BrowserClient();
-    }else{
-      client = http_io.IOClient();
-    }
-    http.Response response = await client.get(Uri.parse(url));
+  static sky.AssetBundle getAssetBundle() => (sky.rootBundle != null)
+      ? sky.rootBundle
+      : new sky.NetworkAssetBundle(new Uri.directory(Uri.base.origin));
 
-    if (response.statusCode != 200) {
-      throw {"message": "failed to load ${url}"};
-    } else {
-      Uint8List bytes = response.bodyBytes;
-      Completer<skyui.Image> completer = new Completer();
-      skyui.decodeImageFromList(bytes, (skyui.Image image) {
-        completer.complete(image);
-      });
-      return completer.future;
+  static Future<skyui.Image> load(String url) async {
+    sky.ImageStream stream = new sky.AssetImage(url, bundle: getAssetBundle()).resolve(sky.ImageConfiguration.empty);
+    Completer<skyui.Image> completer = new Completer<skyui.Image>();
+    
+    sky.ImageStreamListener lis;
+    void listener(sky.ImageInfo frame, bool synchronousCall) {
+      final skyui.Image image = frame.image;
+      completer.complete(image);
+      stream.removeListener(lis);
     }
+    lis = sky.ImageStreamListener(listener);
+    stream.addListener(lis);
+    return completer.future;
   }
 }
 
