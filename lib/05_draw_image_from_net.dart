@@ -11,7 +11,10 @@ import 'package:flutter/painting.dart' as sky;
 import 'dart:ui' as skyui;
 import 'dart:io' as io;
 import 'package:http/io_client.dart' as http_io;
-import 'package:http/browser_client.dart' as http_browser;
+
+//
+// comment out here if use for flutter web 
+//import 'package:http/browser_client.dart' as http_browser;
 
 import 'package:http/http.dart' as http;
 
@@ -79,7 +82,8 @@ class ImageLoader {
     
     http.BaseClient client;
     if(kIsWeb) {
-      client = http_browser.BrowserClient();
+      // comment out here if use for flutter web 
+      //client = http_browser.BrowserClient();
     }else{
       client = http_io.IOClient();
     }
@@ -97,3 +101,4 @@ class ImageLoader {
     }
   }
 }
+
