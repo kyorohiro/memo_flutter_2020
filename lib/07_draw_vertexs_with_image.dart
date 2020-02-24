@@ -94,7 +94,9 @@ class MyRenderBox extends sky.RenderBox {
     skyui.Vertices vertices = new skyui.Vertices(
         vertexMode, verticesSrc,
         textureCoordinates: textureCoordinates,
-        colors: colors);
+        colors: colors,
+        indices: indicies
+        );
     context.canvas.drawVertices(vertices, skyui.BlendMode.color, paint);
   }
 }
